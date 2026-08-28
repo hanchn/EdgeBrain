@@ -1,0 +1,9 @@
+{
+  "feature": "marketplace-1688-product-search",
+  "goal": "Search 1688 products from the in-app marketplace and import selected results as component or purchase candidates.",
+  "provider_contract": ["search", "search_by_image", "product_detail", "import_component_candidate", "import_purchase_candidate"],
+  "recommended_skills": ["linkfox-1688-procurement", "linkfox-1688-search-by-image", "linkfox-1688-product-detail"],
+  "current_status": "adapter scaffolded; skill installation and account configuration required",
+  "image_fallback": "/assets/hardware-placeholder.png",
+  "safety": ["never claim unconfigured results are live", "no automatic ordering or payment", "preserve source URL and price timestamp"]
+}

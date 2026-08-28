@@ -1,0 +1,77 @@
+{
+  "project": "EdgeBrain",
+  "version": "0.1-draft",
+  "decision_date": "2026-08-28",
+  "source": "docs/requirements/source-product-requirements.md",
+  "goal": "构建以电脑为唯一 AI 大脑、统一管理控制器、硬件配件、设备、采购、任务与本地 AI 调度的端侧设备控制管理系统。",
+  "actors": [
+    {"id": "admin", "name": "系统管理员", "responsibilities": ["系统配置", "权限管理", "审计"]},
+    {"id": "operator", "name": "设备操作员", "responsibilities": ["设备接入", "控制", "测试", "故障处理"]},
+    {"id": "purchaser", "name": "采购人员", "responsibilities": ["供应商", "采购单", "到货验收", "复购"]},
+    {"id": "ai_agent", "name": "本地 AI Agent", "responsibilities": ["理解意图", "选择能力", "提交受控执行请求"]},
+    {"id": "edge_node", "name": "EdgeBrain 控制器", "responsibilities": ["接收命令", "采集状态", "驱动硬件", "上报结果"]}
+  ],
+  "modules": [
+    "工作台与待办",
+    "设备管理",
+    "控制器方案与控制器实例",
+    "配件管理",
+    "图片与资料中心",
+    "能力与驱动中心",
+    "空间与分组",
+    "设备控制与测试",
+    "场景与自动化",
+    "AI 调度",
+    "采购与库存",
+    "日志与审计",
+    "系统设置"
+  ],
+  "rules": [
+    "机器人能力不在 V0.1 范围内。",
+    "电脑是唯一 AI 推理与编排中心，外部硬件只负责感知、执行和通信。",
+    "AI 不直接操作 GPIO、串口或网络端点，只调用已注册 Capability。",
+    "每一种硬件搭配必须关联一个版本化控制器方案；每个实物控制器由方案实例化。",
+    "每个硬件配件必须至少有一张主图，缺少主图不得转为可采购或可装配状态。",
+    "高风险或批量控制必须经过策略校验，可配置为需要人工确认。",
+    "所有人工和 AI 控制均写入不可静默删除的审计日志。",
+    "采购到货必须经过验收后才能增加可用库存。",
+    "待办必须能够关联设备、控制器、配件、采购单、测试或故障。"
+  ],
+  "states": {
+    "component": ["draft", "active", "deprecated"],
+    "controller_blueprint": ["draft", "testing", "released", "deprecated"],
+    "controller_instance": ["unassembled", "assembling", "testing", "online", "offline", "fault", "retired"],
+    "device": ["draft", "provisioning", "online", "offline", "fault", "maintenance", "retired"],
+    "purchase_order": ["draft", "pending_approval", "approved", "ordered", "partially_received", "received", "closed", "cancelled"],
+    "todo": ["open", "in_progress", "blocked", "done", "cancelled"],
+    "control_job": ["queued", "validating", "awaiting_confirmation", "dispatching", "running", "succeeded", "failed", "timed_out", "cancelled"]
+  },
+  "non_goals": [
+    "机器人运动、导航、机械臂或自主移动",
+    "云端多租户 SaaS",
+    "V0.1 自动下单或自动付款",
+    "允许大模型任意生成底层硬件命令",
+    "一次性支持所有品牌与协议"
+  ],
+  "dependencies": [
+    "本地数据库",
+    "本地文件或对象存储",
+    "MQTT Broker",
+    "串口访问能力",
+    "本地模型运行时",
+    "ESP32 Edge Node 固件"
+  ],
+  "risks": [
+    {"risk": "错误控制导致设备或人身风险", "mitigation": "能力白名单、参数约束、确认策略、急停与审计"},
+    {"risk": "硬件型号相似导致接线或固件错误", "mitigation": "控制器方案版本、图片、引脚图、兼容性与装配检查"},
+    {"risk": "库存与实物不一致", "mitigation": "采购验收、库存流水、装配领用与盘点"},
+    {"risk": "设备掉线或重复执行", "mitigation": "幂等键、超时、重试策略、心跳和最终状态回报"}
+  ],
+  "open_questions": [
+    "V0.1 是仅单人使用，还是需要管理员、操作员、采购员三种权限？",
+    "首个演示硬件的准确型号、供电方式和安全限制是什么？",
+    "图片首期只允许本地上传，还是也允许保存采购平台图片链接？",
+    "采购流程是否需要金额审批阈值？",
+    "本地模型运行时优先使用 Ollama、llama.cpp，还是做成可插拔适配？"
+  ]
+}

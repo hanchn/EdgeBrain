@@ -1,0 +1,9 @@
+{
+  "feature": "solution-catalog",
+  "navigation": "independent top-level menu",
+  "routes": ["list", "detail", "create", "edit"],
+  "tabs": ["全部", "基础方案", "进阶方案", "高阶方案"],
+  "detail_sections": ["goal", "difficulty", "controller", "bom", "wiring", "assembly_steps", "capabilities", "acceptance_checklist", "compatible_products"],
+  "examples": ["智能开关", "智能避障小车", "环境监测与联动站"],
+  "marketplace_rule": "1688 products are ranked by implementation difficulty and linked to compatible solutions."
+}

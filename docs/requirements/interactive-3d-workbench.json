@@ -1,0 +1,77 @@
+{
+  "feature": "interactive_3d_workbench",
+  "version": "future-draft",
+  "decision_date": "2026-08-28",
+  "status": "documented_not_scheduled",
+  "goal": "提供可操作的 3D 控制器装配工作台，展示配件空间布局、端口、接线和信号关系，并与控制器方案、BOM 和接线定义保持一致。",
+  "actors": [
+    {"id": "learner", "name": "儿童学习者"},
+    {"id": "designer", "name": "控制器方案设计者"},
+    {"id": "technician", "name": "装配与测试人员"}
+  ],
+  "user_stories": [
+    {
+      "id": "3D-001",
+      "story": "作为学习者，我希望旋转、缩放和选择 3D 配件，直观看到控制器由什么组成。",
+      "acceptance_criteria": [
+        "支持轨道旋转、缩放、平移、聚焦和复位视角。",
+        "选中配件时同步显示名称、图片、型号、详细说明和端口。",
+        "没有专用模型时使用带清晰标签的通用占位模型。"
+      ]
+    },
+    {
+      "id": "3D-002",
+      "story": "作为方案设计者，我希望拖动配件并连接端口，系统实时验证接线兼容性。",
+      "acceptance_criteria": [
+        "端口包含类型、方向、电压、电流、协议、引脚和颜色语义。",
+        "只能从端口建立连接，不能靠任意坐标形成业务接线。",
+        "电压、方向、协议或引脚冲突时阻止保存并说明原因。",
+        "3D 接线写回统一 WiringDefinition，不创建独立事实源。"
+      ]
+    },
+    {
+      "id": "3D-003",
+      "story": "作为装配人员，我希望按步骤播放接线和信号流，辅助真实装配与测试。",
+      "acceptance_criteria": [
+        "可逐步显示 BOM、配件放置、供电线、数据线和测试步骤。",
+        "可用动画区分供电、控制信号和传感器数据，但动画不是实际电气仿真结论。",
+        "视图状态可保存并恢复。"
+      ]
+    }
+  ],
+  "architecture": {
+    "renderer": "TresJS on Three.js",
+    "asset_format": "glTF 2.0 / GLB",
+    "interaction": ["OrbitControls", "raycasting selection", "transform controls", "port snapping"],
+    "source_of_truth": ["ControllerBlueprint", "BlueprintItem", "ComponentPort", "WiringDefinition"],
+    "persistence": "3D 场景只保存模型引用、变换和视图状态；BOM 与接线仍由领域模型管理。"
+  },
+  "rules": [
+    "3D 工作台不是独立 CAD，也不是电路仿真器。",
+    "模型文件不携带可执行脚本。",
+    "配件连接必须经过与普通表单相同的服务端校验。",
+    "模型采用 glTF/GLB，记录来源、版权、比例、坐标系和版本。",
+    "低性能树莓派或无 WebGL 环境必须提供 2D 拓扑与表格回退。",
+    "AI 可建议布局和接线草案，但必须验证并由用户确认。"
+  ],
+  "states": {
+    "scene": ["loading", "ready", "editing", "validating", "saved", "invalid", "failed"],
+    "connection": ["draft", "valid", "conflict", "removed"]
+  },
+  "non_goals": [
+    "不在 Foundation 0 实现。",
+    "首期不做 SPICE 电路仿真、PCB 布线或机械碰撞工程认证。",
+    "不替代真实硬件安全检查和万用表测试。"
+  ],
+  "risks": [
+    {"risk": "3D 视觉暗示被误认为电气验证", "mitigation": "明确区分可视化、规则校验和真实测试"},
+    {"risk": "模型过大导致树莓派或集显卡顿", "mitigation": "GLB、LOD、实例化、压缩和 2D 回退"},
+    {"risk": "模型版权或比例不一致", "mitigation": "模型资产元数据、许可检查、单位与原点规范"}
+  ],
+  "open_questions": [
+    "3D 模型主要由项目制作、供应商提供还是从开放模型库获得？",
+    "儿童模式是否允许自由摆放，还是采用吸附式教学布局？",
+    "是否需要 AR 叠加到真实桌面作为远期能力？"
+  ]
+}
+

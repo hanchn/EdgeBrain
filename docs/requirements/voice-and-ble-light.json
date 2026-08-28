@@ -1,0 +1,65 @@
+{
+  "feature": "voice_and_ble_light",
+  "version": "0.1-draft",
+  "decision_date": "2026-08-28",
+  "goal": "验证电脑端语音输入和 BLE 小灯控制的端到端闭环，同时确保任何语音或模型输出都不能绕过 Capability 安全策略。",
+  "actors": [
+    {"id": "operator", "name": "操作员"},
+    {"id": "voice_provider", "name": "语音输入提供者"},
+    {"id": "ai_or_rule_interpreter", "name": "意图解释器"},
+    {"id": "hardware_agent", "name": "本地硬件代理"},
+    {"id": "ble_light", "name": "BLE 小灯"}
+  ],
+  "user_stories": [
+    {
+      "id": "VOICE-001",
+      "story": "作为操作员，我希望说出打开、关闭或调整小灯亮度的命令，并在执行前看到系统识别出的目标和动作。",
+      "acceptance_criteria": [
+        "系统保留原始转写文本和结构化意图，但不保存原始音频，除非用户显式启用。",
+        "无法唯一匹配设备时不执行，提示用户选择目标。",
+        "低置信度、越界参数或不支持的能力不执行。",
+        "执行结果包含成功、失败、超时或等待确认状态。"
+      ]
+    },
+    {
+      "id": "BLE-001",
+      "story": "作为操作员，我希望发现并绑定附近的 BLE 小灯，读取其能力后通过统一控制面板开关和调光。",
+      "acceptance_criteria": [
+        "扫描必须由用户主动开始，并显示蓝牙权限、适配器状态和扫描倒计时。",
+        "绑定记录 Service UUID、Characteristic UUID、编解码、身份依据和对应控制器方案。",
+        "未完成绑定或 Profile 未发布的设备不能接受控制任务。",
+        "写入命令具有超时和幂等键；支持时必须回读最终状态。",
+        "断线、权限拒绝、设备离开范围、GATT 写入失败都有明确恢复提示。"
+      ]
+    }
+  ],
+  "states": {
+    "voice_job": ["capturing", "transcribing", "interpreting", "awaiting_confirmation", "submitted", "rejected", "failed"],
+    "ble_binding": ["discovered", "identifying", "pairing", "probing", "bound", "unavailable", "forgotten"],
+    "control_job": ["queued", "validating", "dispatching", "running", "succeeded", "failed", "timed_out", "cancelled"]
+  },
+  "rules": [
+    "语音只生成结构化控制意图，不直接生成 BLE 字节。",
+    "BLE 写入由已发布的设备 Profile 和 Capability 映射产生。",
+    "亮度参数限定为设备绑定声明的有效范围。",
+    "V0.1 真实控制默认只允许低风险灯具；电热、电机和门锁不复用同一默认策略。",
+    "macOS 设备标识不假设为 MAC 地址。"
+  ],
+  "non_goals": [
+    "V0.1 不实现持续监听的唤醒词。",
+    "V0.1 不保证所有 Bluetooth Classic 灯具兼容。",
+    "在没有真实硬件 Profile 时不猜测 GATT UUID 或命令字节。"
+  ],
+  "dependencies": ["麦克风权限", "STT Provider", "本地模型或规则解释器", "Bleak", "系统蓝牙权限", "具体灯具协议资料"],
+  "risks": [
+    {"risk": "误识别导致错误控制", "mitigation": "目标消歧、置信度门槛、Capability 白名单、审计"},
+    {"risk": "不同平台设备标识不一致", "mitigation": "复合身份与重新绑定流程"},
+    {"risk": "厂商私有 GATT 协议未知", "mitigation": "禁止猜测写入，要求 Profile 或受控协议分析"}
+  ],
+  "open_questions": [
+    "首个蓝牙灯的品牌、型号和协议资料是什么？",
+    "首个语音识别实现使用 macOS 系统能力、Whisper 本地模型还是其他本地 STT？",
+    "是否需要唤醒词，还是首期按键说话？"
+  ]
+}
+

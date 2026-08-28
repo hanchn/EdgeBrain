@@ -1,0 +1,13 @@
+{
+  "feature": "self-learning-knowledge",
+  "positioning": "Hermes is a system-wide learning philosophy, not a UI page or product label.",
+  "loop": ["observe", "extract", "stage", "evaluate", "human_review", "activate", "monitor", "rollback"],
+  "knowledge_types": ["fact", "device_profile", "procedure", "correction", "failure"],
+  "required_metadata": ["source", "confidence", "status", "created_at", "version", "category", "path", "chunks"],
+  "phase_1": {
+    "included": ["system file repository", "category navigation", "search and filtering", "index status", "version and source tracking", "staged writes", "separate file detail", "learning overview"],
+    "excluded": ["online weight training", "automatic code modification", "automatic firmware modification"]
+  },
+  "immutable_safety_kernel": ["capability allowlist", "parameter limits", "confirmation rules", "emergency stop", "authorization", "firmware trust"],
+  "future_runtime": "HermesAdapter may connect to Nous Research Hermes Agent while the product domain remains runtime-independent."
+}

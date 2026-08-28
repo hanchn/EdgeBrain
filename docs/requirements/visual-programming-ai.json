@@ -1,0 +1,71 @@
+{
+  "feature": "visual_programming_ai",
+  "version": "0.1-draft",
+  "decision_date": "2026-08-28",
+  "goal": "提供类似 Scratch 的儿童积木编程界面，让用户通过拖拽或本地 AI 生成安全的设备自动化。",
+  "actors": [
+    {"id": "learner", "name": "儿童学习者"},
+    {"id": "guardian", "name": "家长或教师"},
+    {"id": "local_ai", "name": "本地 AI 模型"},
+    {"id": "automation_engine", "name": "自动化执行器"}
+  ],
+  "user_stories": [
+    {
+      "id": "BLOCK-001",
+      "story": "作为儿童学习者，我希望从分类工具箱拖出事件、连接、传感器、执行器、流程、逻辑、数据日志和安全积木，拼成一个完整硬件自动化程序。",
+      "acceptance_criteria": [
+        "工作区采用 Scratch 风格的积木外观和中文分类。",
+        "程序可连同项目和硬件元数据保存为带版本号的 Blockly JSON 并重新加载。",
+        "缺少触发块、设备不存在或参数越界时不能运行，并标出原因。",
+        "运行前展示即将执行的步骤。"
+      ]
+    },
+    {
+      "id": "BLOCK-002",
+      "story": "作为学习者，我希望描述想实现的效果，由本地 AI 自动生成可继续编辑的积木程序。",
+      "acceptance_criteria": [
+        "AI 输出必须先转换为 Automation IR 并通过 Schema、能力白名单和参数校验。",
+        "AI 生成结果只加载到预览工作区，不自动执行。",
+        "未知设备、未知能力和任意代码字段均被拒绝。",
+        "无本地模型时提供确定性的教学示例生成器，不能伪装成模型结果。"
+      ]
+    },
+    {
+      "id": "BLOCK-003",
+      "story": "作为家长或教师，我希望高风险设备不能被儿童程序直接控制。",
+      "acceptance_criteria": [
+        "积木工具箱只展示当前角色可用的 Capability。",
+        "低风险灯光可直接运行；电热、电机、门锁等需要成人确认或禁止。",
+        "每次运行记录程序版本、发起者、控制任务和结果。"
+      ]
+    }
+  ],
+  "states": {
+    "program": ["draft", "validating", "ready", "running", "paused", "succeeded", "failed", "archived"],
+    "ai_generation": ["draft", "generating", "validating", "preview", "accepted", "rejected", "failed"]
+  },
+  "rules": [
+    "采用 Blockly 和 Zelos 渲染器实现 Scratch 风格，不自行开发拖拽内核。",
+    "Blockly JSON 用于编辑器持久化，Automation IR 是唯一执行输入。",
+    "禁止 eval、Function 构造器和 AI 生成任意 JavaScript/Python。",
+    "本地模型首选 Ollama，通过 ModelAdapter 接入。",
+    "AI 生成的程序必须由用户确认后才可执行。",
+    "积木定义和 Automation IR 都必须有版本号，以支持历史项目迁移。"
+  ],
+  "non_goals": [
+    "V0.1 不兼容 Scratch .sb3 项目文件。",
+    "V0.1 不实现精灵、舞台、动画和 Scratch 社区功能。",
+    "V0.1 不允许用户块执行任意系统命令。"
+  ],
+  "dependencies": ["Blockly", "Vue", "Capability Catalog", "Automation Validator", "Ollama ModelAdapter"],
+  "risks": [
+    {"risk": "模型生成危险或无效程序", "mitigation": "严格 IR、白名单、预览、成人策略和运行审计"},
+    {"risk": "Blockly 状态升级不兼容", "mitigation": "JSON 版本、迁移器和回归样例"},
+    {"risk": "儿童误操作真实设备", "mitigation": "角色工具箱、风险等级、默认模拟模式和急停"}
+  ],
+  "open_questions": [
+    "首期目标年龄段和识字水平是什么？",
+    "是否需要课程、关卡和教师班级管理？",
+    "正式运行是否默认要求家长 PIN？"
+  ]
+}
