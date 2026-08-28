@@ -88,4 +88,24 @@ export const programs: ProgramRecord[] = [
       { name: '低速路测', status: '待开始', deliverable: '碰撞、失联和续航测试报告' },
     ],
   },
+  {
+    id: 'environment-lab', name: '环境监测与联动站', description: '采集温湿度和空气质量数据，并与风扇、提醒器形成自动联动。',
+    hardware: ['ESP32-S3 控制器', '温湿度传感器', '空气质量传感器', '风扇驱动模块'], controller: 'ESP32-S3 边缘控制器', image: '/assets/project-environment-monitor.png', updated: '05-20 14:21', status: '草稿', stage: '传感器总线设计', level: '高阶', duration: '预计 1 天', remote: 'environment',
+    parts: [
+      { name: 'ESP32-S3 开发板', quantity: 1, role: '边缘控制器', required: true, source: '待选品' },
+      { name: '温湿度传感器', quantity: 1, role: '环境采集', required: true, source: '待选品' },
+      { name: '空气质量传感器', quantity: 1, role: '空气质量采集', required: true, source: '待选品' },
+      { name: '5V 风扇与驱动模块', quantity: 1, role: '自动联动执行器', required: true, source: '待选品' },
+      { name: '蜂鸣器或状态灯', quantity: 1, role: '本地异常提醒', required: false, source: '常备耗材' },
+    ],
+    workflow: ['搭建传感器总线', '完成多设备地址配置', '设置采样和异常阈值', '建立风扇联动程序', '连续运行并检查数据质量'],
+    capabilities: ['sensor.temperature.read', 'sensor.humidity.read', 'sensor.air_quality.read', 'fan.set_speed', 'alert.notify'],
+    safety: ['传感器总线使用 3.3V 逻辑', '风扇单独使用 5V 驱动并与控制器共地', '异常值连续出现三次后再触发联动', '保留手动停止风扇入口'],
+    milestones: [
+      { name: '传感器总线', status: '进行中', deliverable: '温湿度与空气质量稳定读数' },
+      { name: '阈值与联动', status: '待开始', deliverable: '风扇、提醒器和异常处理规则' },
+      { name: '数据面板', status: '待开始', deliverable: '实时曲线与最近异常记录' },
+      { name: '连续运行', status: '待开始', deliverable: '24 小时数据质量与温升报告' },
+    ],
+  },
 ]

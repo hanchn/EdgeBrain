@@ -1,4 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
+
+const legacySolutionProject: Record<string, string> = {
+  'smart-switch': 'low-voltage-switch',
+  'smart-car': 'robot-car',
+  'environment-lab': 'environment-lab',
+}
+const projectPathForLegacySolution = (id?: string | string[]) => {
+  const legacyId = String(id ?? '')
+  return legacyId ? `/programs/${legacySolutionProject[legacyId] ?? legacyId}` : '/programs'
+}
+
 export default createRouter({
   history: createWebHistory(),
   routes: [
@@ -7,13 +18,14 @@ export default createRouter({
     { path: '/components/new', component: () => import('./views/ComponentCreateView.vue'), meta: { title: '新增配件' } },
     { path: '/components/:id', component: () => import('./views/ComponentDetailView.vue'), meta: { title: '配件详情' } },
     { path: '/devices', component: () => import('./views/DevicesView.vue'), meta: { title: '设备控制' } },
-    { path: '/solutions', component: () => import('./views/SolutionsView.vue'), meta: { title: '方案清单' } },
-    { path: '/solutions/new', component: () => import('./views/SolutionFormView.vue'), meta: { title: '新建方案' } },
-    { path: '/solutions/:id', component: () => import('./views/SolutionDetailView.vue'), meta: { title: '方案详情' } },
-    { path: '/solutions/:id/edit', component: () => import('./views/SolutionFormView.vue'), meta: { title: '编辑方案' } },
-    { path: '/solutions/:id/training', component: () => import('./views/TrainingDocumentView.vue'), meta: { title: '培训文档' } },
+    { path: '/solutions', redirect: '/programs' },
+    { path: '/solutions/new', redirect: '/programs/new' },
+    { path: '/solutions/:id', redirect: to => projectPathForLegacySolution(to.params.id) },
+    { path: '/solutions/:id/edit', redirect: to => projectPathForLegacySolution(to.params.id) },
+    { path: '/solutions/:id/training', redirect: to => projectPathForLegacySolution(to.params.id) },
     { path: '/programs', component: () => import('./views/ProgramsView.vue'), meta: { title: '项目' } },
     { path: '/programs/new', component: () => import('./views/ProgramCreateView.vue'), meta: { title: '新建项目' } },
+    { path: '/programs/:id/circuit', component: () => import('./views/CircuitEditorView.vue'), meta: { title: '电路图编辑器', fullscreenEditor: true } },
     { path: '/programs/:id/edit', component: () => import('./views/StudioView.vue'), meta: { title: '积木编辑器', fullscreenEditor: true } },
     { path: '/programs/:id/remote', component: () => import('./views/ProgramRemoteView.vue'), meta: { title: '虚拟遥控器' } },
     { path: '/programs/:id', component: () => import('./views/ProgramDetailView.vue'), meta: { title: '项目详情' } },

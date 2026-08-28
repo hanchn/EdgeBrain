@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, watchEffect } from 'vue'
 import { useRoute } from 'vue-router'
-import { Box, ChatDotRound, Collection, Connection, Expand, Fold, House, List, Moon, Reading, ShoppingCart, Sunny, Tickets, User } from '@element-plus/icons-vue'
+import { Box, ChatDotRound, Collection, Connection, Expand, Fold, House, List, Moon, Reading, ShoppingCart, Sunny, User } from '@element-plus/icons-vue'
 
 const sidebarCollapsed = ref(localStorage.getItem('edgebrain-sidebar-collapsed') === 'true')
 const route = useRoute()
@@ -31,7 +31,6 @@ watch(() => route.meta.fullscreenEditor, (isFullscreen) => {
         <RouterLink to="/" title="积木工作室"><el-icon><House /></el-icon><span>积木工作室</span></RouterLink>
         <RouterLink to="/components" title="硬件设备"><el-icon><Box /></el-icon><span>硬件设备</span></RouterLink>
         <RouterLink to="/devices" title="控制器"><el-icon><Connection /></el-icon><span>控制器</span></RouterLink>
-        <RouterLink to="/solutions" title="方案清单"><el-icon><Tickets /></el-icon><span>方案清单</span></RouterLink>
         <RouterLink to="/ai" title="AI 助手"><el-icon><ChatDotRound /></el-icon><span>AI 助手</span></RouterLink>
         <RouterLink to="/programs" title="项目"><el-icon><Collection /></el-icon><span>项目</span></RouterLink>
         <RouterLink to="/todos" title="教学任务"><el-icon><List /></el-icon><span>教学任务</span></RouterLink>
