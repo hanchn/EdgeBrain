@@ -9,7 +9,7 @@ __pycache__/
 node_modules/
 dist/
 coverage/
+.coverage
 data/
 playwright-report/
 test-results/
-
